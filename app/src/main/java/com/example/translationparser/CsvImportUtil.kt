@@ -24,8 +24,8 @@ class CsvImportUtil(private var context: Context, private var fileName: String) 
 
     private fun createXML(){
         val rows = getRows(context.resources.assets.open(fileName))
-        //for( row in rows){
-        //    System.out.println(row)
-        //}
+        for( row in rows){
+            //TODO: create XML FILE
+        }
     }
 }
