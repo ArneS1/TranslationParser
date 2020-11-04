@@ -108,7 +108,7 @@ task_list_pregnancy_week_short;SSW
 task_list_month_of_life_short;Monat
 task_list_birth_short;Geburt
  ;
-==Tasks - Detail==; 
+==Tasks - Detail==;
 task_detail_further_information_header;Weitere Informationen:
 task_detail_text_task_done;Bereits erledigt
 task_detail_text_task_not_done;Als erledigt markieren
