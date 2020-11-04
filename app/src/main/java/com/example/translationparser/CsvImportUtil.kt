@@ -19,13 +19,22 @@ class CsvImportUtil(private var context: Context, private var fileName: String) 
     }
 
     fun createFiles(){
-        createXML()
+        createXML2()
     }
 
     private fun createXML(){
         val rows = getRows(context.resources.assets.open(fileName))
         for( row in rows){
             System.out.println(row)
+        }
+    }
+
+    private fun createXML2(){
+        csvReader().open("src/main/assets/"+fileName) {
+            readAllAsSequence().forEach { row ->
+                //Do something
+                println(row) //[a, b, c]
+            }
         }
     }
 }
