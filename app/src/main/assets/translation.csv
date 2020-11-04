@@ -1,41 +1,41 @@
-==Allgemein==
+==Allgemein==;
 app_name;HanseBaby
 button_cancel;Abbrechen
 button_ok;OK
 list_bulletpoint;•
-
-==Onboarding==
+ ;
+==Onboarding==;
 onboarding_common_button_skip;Überspringen
-
-==Onboarding - Welcome (Seite 1)==
+ ;
+==Onboarding - Welcome (Seite 1)==;
 onboarding_welcome_text;Du erwartest ein Kind und möchtest gut vorbereitet sein? \n\nDein Baby ist schon da und du benötigst Unterstützung? \n\nHanseBaby ist ein kostenloses Angebot der Freien und Hansestadt Hamburg. HanseBaby unterstützt dich bei allen Themen rund um die Schwangerschaft, Geburt und eure gemeinsame Zeit danach.
 onboarding_welcome_welcome;Willkommen
 onboarding_welcome_at;bei
-
-==Onboarding - List (Seite 2)==
+ ;
+==Onboarding - List (Seite 2)==;
 onboarding_list_hint_timeline;Finde dich schnell zurecht  mit Hilfe der Zeitleiste.
 onboarding_list_hint_categories;Erhalte eine Übersicht der  To-dos rund um die  Gesundheit, wichtige  Formalitäten und zu  Beratungsangeboten.
 onboarding_list_hint_list;Nutze die To-do-Liste als  Wegweiser für deine  Erledigungen.
-
-==Onboarding - Maren (Seite 3)==
+ ;
+==Onboarding - Maren (Seite 3)==;
 onboarding_maren_hint;Lass dich von deiner digitalen Hebamme Maren an wichtige To-dos erinnern und verpasse keine Termine.
-
-==Onboarding - Birthdate (Seite 4)==
+ ;
+==Onboarding - Birthdate (Seite 4)==;
 onboarding_birthdate_description;Bitte trage den Geburtstermin ein, damit Maren dich rechtzeitig erinnern kann, an wichtige To-dos zu denken.
 onboarding_birthdate_button_continue_without_date;<u>Ohne Geburtstermin fortfahren</u>
 onboarding_birthdate_button_enter_date;Geburtstermin eintragen
 onboarding_birthdate_toast_no_date_saved;Kein Geburtstermin gespeichert
 onboarding_birthdate_button_continue_to_list;Jetzt zu meiner To-do-Liste
 onboarding_birthdate_text_no_reminders_without_date;Du kannst HanseBaby auch ohne die Angabe des Geburtstermins nutzen. Dann kann Maren dich aber nicht an wichtige To-dos erinnern.   Angaben zu Geburtstermin und Erinnerungen kannst du jederzeit im Menü bearbeiten.
-
-==Bottom Navigation==
+ ;
+==Bottom Navigation==;
 bottom_nav_target_menu;Menü
 bottom_nav_target_health;Gesundheit
 bottom_nav_target_consultation;Beratung
 bottom_nav_target_formalities;Formalitäten
 bottom_nav_target_corona;Corona
-
-==Menu==
+ ;
+==Menu==;
 menu_button_legal_notice;Impressum/Datenschutz
 menu_button_welcome;Willkommen
 menu_button_phone_number;Elterntelefon
@@ -44,8 +44,8 @@ menu_button_notifications;Erinnerungen bearbeiten
 menu_button_reset;Zurücksetzen
 menu_button_feedback;Deine Meinung
 menu_button_checklist_migrant;Fremdsprachige Informationen
-
-==Menu - Birthdate==
+ ;
+==Menu - Birthdate==;
 birthdate_description;@string/onboarding_birthdate_description
 birthdate_button_save;Speichern
 birthdate_button_delete_date;<u>Datum entfernen</u>
@@ -55,24 +55,24 @@ birthdate_page_title;Geburtstermin bearbeiten
 birthdate_button_enter_date;@string/onboarding_birthdate_button_enter_date
 birthdate_toast_no_date_saved;@string/onboarding_birthdate_toast_no_date_saved
 birthdate_toast_date_saved;Geburtstermin gespeichert
-
-==Menu - Feedback==
+ ;
+==Menu - Feedback==;
 feedback_text;Die vielen Aufgaben und Erledigungen während der Schwangerschaft und nach der Geburt können eine echte Herausforderung darstellen. \n\nWir möchten dich mit diesem Wegweiser dabei unterstützen, einen Überblick über diese spannende Zeit zu erhalten und an alle wichtigen Erledigungen zu denken. \n\nBitte hilf uns, HanseBaby stetig zu verbessern: Lass uns wissen, was wir besser machen können und welche deiner Wünsche wir erfüllen dürfen. Schreibe uns an:
 feedback_page_title;Deine Meinung zählt!
-
-==Menu - Phone==
+ ;
+==Menu - Phone==;
 phone_page_title;Elterntelefon
 phone_bodytext;Der Kinderschutzbund betreibt in Zusammenarbeit mit der „Nummer gegen Kummer“ ein kostenfreies Elterntelefon. Hier hast du die Gelegenheit, anonym mit kompetenten Beraterinnen und Beratern über deine Fragen, Anliegen und Erziehungsprobleme zu sprechen. Bei Bedarf erhältst du auch Informationen über weitere Hilfemöglichkeiten in Hamburg.
 phone_free_number;kostenfrei
-
-==Menu - Notifications==
+ ;
+==Menu - Notifications==;
 notifications_page_title;Erinnerungen bearbeiten
 notifications_bodytext;Sobald du einen Geburtstermin eingetragen hast, kannst du dich von deiner digitalen Hebamme Maren an wichtige To-dos erinnern lassen, um keine wichtigen Termine zu verpassen.
 notifications_toast_birthdate_missing;Bitte trage zuerst im Menü einen Geburtstermin ein, um Erinnerungen zu erhalten
 notifications_button_app_settings;<u>Erweiterte Einstellungen</u>
 notifications_switch_receive_notifications;Erinnerungen erhalten?
-
-==Menu - Reset==
+ ;
+==Menu - Reset==;
 reset_page_title;Zurücksetzen: \nDu möchtest nochmal neu beginnen?
 reset_bodytext;Hier kannst du alles löschen, was du in HanseBaby eingegeben hast:
 reset_bodytext_bullet_1;Alle To Dos werden wieder als noch nicht erledigt angezeigt.
@@ -84,31 +84,31 @@ reset_confirm_button_ok;Zurücksetzen
 reset_confirm_button_cancel;Abbrechen
 reset_confirm_toast_message;Alle Eingaben wurden erfolgreich zurückgesetzt
 reset_button_reset;Zurücksetzen
-
-==Menu - Checklist==
+ ;
+==Menu - Checklist==;
 checklist_page_title;Fremdsprachige Informationen
 checklist_bodytext;Wir möchten, dass Sie und Ihr Baby einen guten Start haben. Das Gesundheitssystem in Deutschland funktioniert vermutlich nicht genau so, wie Sie es aus Ihrem Herkunftsland kennen. Die Checkliste soll Ihnen helfen, wichtige Fragen zur Schwangerschaftsvorsorge, zur Geburt und für die erste Zeit danach rechtzeitig zu klären. So können Sie sich in aller Ruhe vorbereiten und das Wichtigste für die Geburt Ihres Babys organisieren. Wenn Sie Hilfe benötigen, zögern Sie nicht, Ihre Ansprechpersonen in Ihrer Unterkunft oder bei Beratungsstellen zu fragen.
-
-==Menu - Legal Notice==
+ ;
+==Menu - Legal Notice==;
 legal_notice_button_impressum;Impressum / Datenschutz
 legal_notice_button_licenses;Lizenzen
-
-==Menu - Legal Notice - Licenses==
+ ;
+==Menu - Legal Notice - Licenses==;
 licenses_page_title;Lizenzen
-
-==Tasks==
+ ;
+==Tasks==;
 task_list_hint_days_until_birth#one;Noch 1 Tag bis zur Geburt
 task_list_hint_days_until_birth#other;Noch %d Tage bis zur Geburt
 task_list_pregnancy_week_long;Schwangerschaftswoche
 task_list_month_of_life_long;Lebensmonat
 task_list_birth_long;Geburt
-
-==Tasks - Timeline==
+ ;
+==Tasks - Timeline==;
 task_list_pregnancy_week_short;SSW
 task_list_month_of_life_short;Monat
 task_list_birth_short;Geburt
-
-==Tasks - Detail==
+ ;
+==Tasks - Detail==; 
 task_detail_further_information_header;Weitere Informationen:
 task_detail_text_task_done;Bereits erledigt
 task_detail_text_task_not_done;Als erledigt markieren
