@@ -1,37 +1,37 @@
 
-r	java:S117:"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µƒ²°şÿÿÿÿ8¼ÜæÚ.
-l	java:S117<"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ¯µ"8ÜëÛÚ.
-Q
-java:S2755"3Disable access to external entities in XML parsing.(üÂŠ‰8º°®“Ú.
-i
-java:S2095{"LUse try-with-resources or close this "BufferedReader" in a "finally" clause.(ÖÕöÊ8€—€‘Ú.
-r	java:S1179"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÑÓ³ÿÿÿÿÿ8«ÕºÚ.
-F
-java:S1148Ç"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Şµİ“Ú.
-¤
-java:S1186‚"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ç—„Œùÿÿÿÿ8º°®“Ú.
-O
-java:S1172‚",Remove this unused method parameter "lines".(Ç—„Œùÿÿÿÿ8º°®“Ú.
-J
-java:S1604\"(Make this anonymous inner class a lambda(„ìæ‰ÿÿÿÿÿ8å³ßÚ.
-P
-java:S1135Ü"2Complete the task associated to this TODO comment.(è²óÀ8º°®“Ú.
-u
-java:S3776‹"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(Ääê™øÿÿÿÿ8¦üŠ”Ú.
+j	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ¯µ"8ÜëÛÚ.
+L
+java:S1172",Remove this unused method parameter "lines".(Ç—„Œùÿÿÿÿ8º°®“Ú.
+N
+java:S2755"3Disable access to external entities in XML parsing.(İ‰Ë–8ùßÚ“Ú.
+C
+java:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Şµİ“Ú.
+¡
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ç—„Œùÿÿÿÿ8º°®“Ú.
 M
-java:S1066Ô"/Merge this if statement with the enclosing one.(ñìíª8½¢‘•Ú.
-m	java:S117>"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Âéëš8…ÉèÚ.
-E
-java:S1604f"(Make this anonymous inner class a lambda(¦‚â½8å³ßÚ.
-T
-java:S1135@"2Complete the task associated to this TODO comment.(³‚úşÿÿÿÿ8Ñ¦æÚ.
-P
-java:S1135‡"2Complete the task associated to this TODO comment.(Ùûê¿8¨ˆ÷Ú.
-Q
-java:S2755À"3Disable access to external entities in XML parsing.(İ‰Ë–8ùßÚ“Ú.
-O
-java:S1135È"2Complete the task associated to this TODO comment.(öñû8Şµİ“Ú.
-l	java:S117B"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œøÙJ8æëçÚ.
-F
-java:S1148‘"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8º°®“Ú.
-m	java:S117;"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(óÌœÇ8À…ÉÚ.
+java:S1135"2Complete the task associated to this TODO comment.(Ùûê¿8¨ˆ÷Ú.
+p	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÑÓ³ÿÿÿÿÿ8«ÕºÚ.
+k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(óÌœÇ8À…ÉÚ.
+r
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(Ääê™øÿÿÿÿ8¦üŠ”Ú.
+L
+java:S1135"2Complete the task associated to this TODO comment.(öñû8Şµİ“Ú.
+C
+java:S1604"(Make this anonymous inner class a lambda(¦‚â½8å³ßÚ.
+g
+java:S2095"LUse try-with-resources or close this "BufferedReader" in a "finally" clause.(ÖÕöÊ8€—€‘Ú.
+p	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µƒ²°şÿÿÿÿ8¼ÜæÚ.
+N
+java:S2755"3Disable access to external entities in XML parsing.(üÂŠ‰8º°®“Ú.
+j	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œøÙJ8æëçÚ.
+M
+java:S1135"2Complete the task associated to this TODO comment.(è²óÀ8º°®“Ú.
+J
+java:S1066"/Merge this if statement with the enclosing one.(ñìíª8½¢‘•Ú.
+k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Âéëš8…ÉèÚ.
+R
+java:S1135"2Complete the task associated to this TODO comment.(³‚úşÿÿÿÿ8Ñ¦æÚ.
+H
+java:S1604"(Make this anonymous inner class a lambda(„ìæ‰ÿÿÿÿÿ8å³ßÚ.
+C
+java:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8º°®“Ú.
