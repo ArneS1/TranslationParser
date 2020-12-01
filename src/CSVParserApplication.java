@@ -1,3 +1,4 @@
+import com.sun.imageio.spi.InputStreamImageInputStreamSpi;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -14,6 +15,8 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.*;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -21,9 +24,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,15 +35,16 @@ public class CSVParserApplication extends Application {
 
     private File csvFile;
     private boolean parseToXML;
-    private boolean parseToSwift;
+    private boolean parseToStrings;
     private String savePath;
 
     @Override
     public void init() throws Exception {
         //Before Launch
         parseToXML = true;
-        parseToSwift = true;
+        parseToStrings = true;
     }
+
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -57,10 +58,10 @@ public class CSVParserApplication extends Application {
         Label label_dragNdrop = new Label("Drag and Drop your CSV File here:");
         ImageView imageView_dragHere = createDragDropImageView();
         Label label_outoutOptions = new Label("Output Options:");
-        RadioButton radioButton_XML = new RadioButton("Parse to XML");
+        RadioButton radioButton_XML = new RadioButton("Parse to XML (Android)");
         radioButton_XML.setSelected(parseToXML);
-        RadioButton radioButton_Swift = new RadioButton("Parse to Swift");
-        radioButton_Swift.setSelected(parseToSwift);
+        RadioButton radioButton_Swift = new RadioButton("Parse to Strings (iOS)");
+        radioButton_Swift.setSelected(parseToStrings);
         //TODO: add Listeners to RadioButtons
 
         Button button_startParsing = new Button("Start");
@@ -130,19 +131,18 @@ public class CSVParserApplication extends Application {
                 System.out.println(e.getMessage());
             }
             if (parseToXML) parseToXmlFile(lines);
-            if (parseToSwift) parseToSwiftFile(lines);
+            if (parseToStrings) parseToStringsFile(lines);
         } else {
             //TODO: Tell user to select output option
         }
     }
 
     private void parseToXmlFile(List<String> lines) {
-        Document xml = createXMLdoc();
+        Document xml = createDoc();
         assert xml != null;
         Element rootElement = xml.createElement("resources");
         xml.appendChild(rootElement);
         lines.forEach(line -> {
-            System.out.println("LINE: " + line);
             Element nextElement = null;
             if (getLineType(line) != null) {
                 switch (Objects.requireNonNull(getLineType(line))) {
@@ -175,7 +175,6 @@ public class CSVParserApplication extends Application {
                         break;
                 }
                 if (nextElement != null) {
-                    System.out.println("XML: adding Element:" + nextElement);
                     rootElement.appendChild(nextElement);
                     nextElement = null;
                 }
@@ -228,10 +227,7 @@ public class CSVParserApplication extends Application {
 
     private Element createContentXML(Document doc, String line) {
         String name = line.substring(0, line.indexOf(';'));
-        System.out.println("CONTENT: Name: " + name);
-
         String content = line.substring(line.indexOf(';') + 1);
-        System.out.println("CONTENT: content: " + content);
 
         Element newElement = doc.createElement("string");
         newElement.setAttribute("name", name);
@@ -241,12 +237,11 @@ public class CSVParserApplication extends Application {
     }
 
     private Element createPluralXML(Document doc, List<String> lines) {
-        System.out.println(lines);
         Element plurals = doc.createElement("plurals");
         plurals.setAttribute("name", lines.get(0).substring(0, lines.get(0).indexOf('#')));
         lines.forEach(line ->{
             String quantity =  line.substring(line.indexOf('#')+1, line.indexOf(';'));
-            String content = line.substring((';')+1);
+            String content = line.substring((';')+1, line.length());
             Element item = doc.createElement("item");
             item.setAttribute("quantity", quantity);
             item.setTextContent(content);
@@ -255,16 +250,49 @@ public class CSVParserApplication extends Application {
         return plurals;
     }
 
-    private void parseToSwiftFile(List<String> lines) {
-
+    private void parseToStringsFile(List<String> lines) {
+        List<String> outLines = new ArrayList<>();
+        lines.forEach(line -> {
+            if(getLineType(line) != null) {
+                switch (Objects.requireNonNull(getLineType(line))) {
+                    case empty:
+                        outLines.add("");
+                        break;
+                    case comment:
+                        outLines.add(createCommentString(line));
+                        break;
+                    case content:
+                        outLines.add(createContentString(line));
+                        break;
+                    case plural:
+                        //TODO:
+                }
+            }
+            else {
+                System.out.println("STRINGS: no line Type on line: " + line);
+            }
+        });
+        System.out.println("STRINGS: all lines handled");
+        createStringsFile(outLines);
     }
 
-    @Override
-    public void stop() throws Exception {
-        //After Stopping
+    private String createContentString(String line) {
+        String name = line.substring(0, line.indexOf(';'));
+        String content = line.substring(line.indexOf(';') + 1);
+
+        String newElement = "\"" + name + "\"";
+        newElement += " = ";
+        newElement += "\"" + content + "\";";
+
+        return newElement;
     }
 
-    private Document createXMLdoc() {
+    private String createCommentString(String line) {
+        String content = line.substring(2, line.length() - 2);
+        return "/* " + content + " */";
+    }
+
+    private Document createDoc() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -273,6 +301,29 @@ public class CSVParserApplication extends Application {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void createStringsFile(List<String> lines){
+        try{
+            String newPath = savePath.replace("\\",System.getProperty("file.separator"));
+            File file = new File( newPath,"Localizable.strings");
+            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+            Writer writer = new BufferedWriter(fileWriter);
+            System.out.println("STRINGS: File created in " + newPath);
+            lines.forEach( line -> {
+                try {
+                    writer.write(line);
+                    writer.write("\n");
+                    writer.flush();
+                } catch (IOException e) {
+                    System.out.println("An error occurred: " + e);
+                }
+            });
+            System.out.println("STRINGS: all lines written");
+            fileWriter.close();
+        } catch (IOException e){
+            System.out.println("An error occurred: " + e);
+        }
     }
 
     private LineType getLineType(String line) {
@@ -293,5 +344,10 @@ public class CSVParserApplication extends Application {
         }
 
         return null;
+    }
+
+    @Override
+    public void stop() throws Exception {
+        //After Stopping
     }
 }
