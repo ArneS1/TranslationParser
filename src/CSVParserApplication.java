@@ -1,4 +1,3 @@
-import com.sun.imageio.spi.InputStreamImageInputStreamSpi;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -11,12 +10,11 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
 import java.io.*;
 
+import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -241,7 +239,7 @@ public class CSVParserApplication extends Application {
         plurals.setAttribute("name", lines.get(0).substring(0, lines.get(0).indexOf('#')));
         lines.forEach(line ->{
             String quantity =  line.substring(line.indexOf('#')+1, line.indexOf(';'));
-            String content = line.substring((';')+1, line.length());
+            String content = line.substring(line.indexOf(';')+1, line.length());
             Element item = doc.createElement("item");
             item.setAttribute("quantity", quantity);
             item.setTextContent(content);
@@ -252,6 +250,7 @@ public class CSVParserApplication extends Application {
 
     private void parseToStringsFile(List<String> lines) {
         List<String> outLines = new ArrayList<>();
+        List<List<String>> plurals = new ArrayList<>();
         lines.forEach(line -> {
             if(getLineType(line) != null) {
                 switch (Objects.requireNonNull(getLineType(line))) {
@@ -265,15 +264,29 @@ public class CSVParserApplication extends Application {
                         outLines.add(createContentString(line));
                         break;
                     case plural:
-                        //TODO:
+                        if (!getLineType(lines.get(lines.indexOf(line) - 1)).equals(LineType.plural)) { //check if it is the first item of the plurals
+
+                            List<String> pluralLines = new ArrayList<>();          //create list with all plural items
+                            LineType lineType = LineType.plural;
+                            int i = lines.indexOf(line);
+
+                            while (lineType == LineType.plural) {
+                                pluralLines.add(lines.get(i));
+                                i++;
+                                lineType = getLineType(lines.get(i));
+                            }
+                            plurals.add(pluralLines);
+                        }
+                        break;
                 }
+                createPluralsFile(plurals);
             }
             else {
                 System.out.println("STRINGS: no line Type on line: " + line);
             }
         });
         System.out.println("STRINGS: all lines handled");
-        createStringsFile(outLines);
+        createStringsFile(outLines, "Localizable.strings");
     }
 
     private String createContentString(String line) {
@@ -292,6 +305,106 @@ public class CSVParserApplication extends Application {
         return "/* " + content + " */";
     }
 
+    private void createPluralsFile(List<List<String>> plurals){
+        Document file = createDoc();
+        assert file != null;
+
+        Element rootPlist = createXmlElement(file, "plist","version","1.0", null);
+        file.appendChild(rootPlist);
+
+        Element dict = file.createElement("dict");
+        rootPlist.appendChild(dict);
+
+        plurals.forEach(plural -> {
+            String name = plural.get(0).substring(0,plural.get(0).indexOf('#'));
+            final String[] zero = new String[1];
+            zero[0] = "";
+            final String[] one = new String[1];
+            one[0] = "";
+            final String[] two = new String[1];
+            two[0] = "";
+            final String[] few = new String[1];
+            few[0] = "";
+            final String[] many = new String[1];
+            many[0] = "";
+            final String[] other = new String[1];
+            other[0] = "";
+            plural.forEach(line -> {
+                String substring = line.substring(line.indexOf(';') + 1, line.length());
+                if(line.contains("#zero")) zero[0] = substring;
+                if(line.contains("#one")) one[0] = substring;
+                if(line.contains("#two")) two[0] = substring;
+                if(line.contains("#few")) few[0] = substring;
+                if(line.contains("#many")) many[0] = substring;
+                if(line.contains("#other")) other[0] = substring;
+            });
+
+            dict.appendChild(createXmlElement(file, "key",null,null, name));
+
+            Element rootDict = file.createElement("dict");
+            dict.appendChild(rootDict);
+
+            rootDict.appendChild(createXmlElement(file, "key",null,null, "NSStringLocalizedFormatKey"));
+            rootDict.appendChild(createXmlElement(file, "string",null,null, "%#@" + name + "@"));
+            rootDict.appendChild(createXmlElement(file, "key",null,null, name));
+
+            Element pluralDict = createXmlElement(file, "dict",null,null, null);
+            rootDict.appendChild(pluralDict);
+
+            pluralDict.appendChild(createXmlElement(file,"key",null,null,"NSStringFormatSpecTypeKey"));
+            pluralDict.appendChild(createXmlElement(file,"string",null,null,"NSStringPluralRuleType"));
+            pluralDict.appendChild(createXmlElement(file,"key",null,null,"NSStringFormatValueTypeKey"));
+            pluralDict.appendChild(createXmlElement(file,"string",null,null,"d"));
+
+            pluralDict.appendChild(createXmlElement(file, "key", null, null, "zero"));
+            pluralDict.appendChild(createXmlElement(file, "string", null, null, zero[0]));
+            pluralDict.appendChild(createXmlElement(file, "key", null, null, "one"));
+            pluralDict.appendChild(createXmlElement(file, "string", null, null, one[0]));
+            pluralDict.appendChild(createXmlElement(file, "key", null, null, "two"));
+            pluralDict.appendChild(createXmlElement(file, "string", null, null, two[0]));
+            pluralDict.appendChild(createXmlElement(file, "key", null, null, "few"));
+            pluralDict.appendChild(createXmlElement(file, "string", null, null, few[0]));
+            pluralDict.appendChild(createXmlElement(file, "key", null, null, "many"));
+            pluralDict.appendChild(createXmlElement(file, "string", null, null, many[0]));
+            pluralDict.appendChild(createXmlElement(file, "key", null, null, "other"));
+            pluralDict.appendChild(createXmlElement(file, "string", null, null, other[0]));
+
+        });
+
+        parseToStringsdict(file);
+    }
+
+    private Element createXmlElement(Document document,
+                                     String tagName,
+                                     String attribute,
+                                     String attributeValue,
+                                     String textContent){
+        Element element = document.createElement(tagName);
+        if(attribute != null) element.setAttribute(attribute, attributeValue);
+        if(textContent != null) element.setTextContent(textContent);
+        return element;
+    }
+
+    private void parseToStringsdict(Document document){
+        try {
+            StreamResult result = new StreamResult(new File(savePath + "/Localizable.stringsdict"));
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            DOMImplementation domImpl = document.getImplementation();
+            DocumentType doctype = domImpl.createDocumentType("doctype",
+                    "-//Apple//DTD PLIST 1.0//EN",
+                    "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
+            DOMSource source = new DOMSource(document);
+            transformer.transform(source, result);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private Document createDoc() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -303,10 +416,10 @@ public class CSVParserApplication extends Application {
         return null;
     }
 
-    private void createStringsFile(List<String> lines){
+    private void createStringsFile(List<String> lines, String fileName){
         try{
             String newPath = savePath.replace("\\",System.getProperty("file.separator"));
-            File file = new File( newPath,"Localizable.strings");
+            File file = new File( newPath,fileName);
             FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
             Writer writer = new BufferedWriter(fileWriter);
             System.out.println("STRINGS: File created in " + newPath);
