@@ -1,3 +1,0 @@
-@ECHO OFF
-ECHO launching parser...
-java -jar XmlParser.jar
