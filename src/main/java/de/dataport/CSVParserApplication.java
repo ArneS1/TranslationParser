@@ -1,5 +1,7 @@
 package de.dataport;
 
+import de.dataport.strings.StringsElementCreator;
+import de.dataport.xml.XmlElementCreator;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -35,6 +37,9 @@ public class CSVParserApplication extends Application {
     private boolean parseToStrings;
     private String savePath;
 
+    private XmlElementCreator xmlElementCreator;
+    private StringsElementCreator stringsElementCreator;
+
     @Override
     public void init() throws Exception {
         //Before Launch
@@ -62,7 +67,7 @@ public class CSVParserApplication extends Application {
         Button button_startParsing = new Button("Start");
         button_startParsing.setOnAction(e -> {
             savePath = getSavePath();
-            startParsing();
+            readCSVFile();
         });
 
         parent.getChildren().addAll(label_dragNdrop,
@@ -123,7 +128,7 @@ public class CSVParserApplication extends Application {
         }
     }
 
-    private void startParsing() {
+    private void readCSVFile() {
         if (csvFile != null) {
             List<String> lines = new ArrayList<>();
             try {
@@ -132,19 +137,28 @@ public class CSVParserApplication extends Application {
                 while ((line = reader.readLine()) != null) {
                     //TODO: escape Character
                     //TODO: Remove first line
-                    System.out.println("LINE: " + line);
                     String newLine = removeGerman(line);
-                    System.out.println("NEWLINE: " + newLine);
                     lines.add(newLine);
                 }
                 System.out.println(lines.size() + " lines read");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            if (parseToXML) parseToXmlFile(lines);
-            if (parseToStrings) parseToStringsFile(lines);
+            startParsing(lines);
         } else {
             //TODO: Tell user to select output option
+        }
+    }
+
+    private void startParsing(List<String> lines){
+        if (parseToXML){
+            xmlElementCreator = new XmlElementCreator();
+            parseToXmlFile(lines);
+        }
+
+        if (parseToStrings) {
+            stringsElementCreator = new StringsElementCreator();
+            parseToStringsFile(lines);
         }
     }
 
@@ -181,18 +195,19 @@ public class CSVParserApplication extends Application {
         assert xml != null;
         Element rootElement = xml.createElement("resources");
         xml.appendChild(rootElement);
+
         lines.forEach(line -> {
             Element nextElement = null;
             if (getLineType(line) != null) {
                 switch (Objects.requireNonNull(getLineType(line))) {
                     case empty:
-                        nextElement = createEmptyXML();
+                        nextElement = xmlElementCreator.createEmptyXML();
                         break;
                     case comment:
-                        rootElement.appendChild(createCommentXML(xml, line));
+                        rootElement.appendChild(xmlElementCreator.createCommentXML(xml, line));
                         break;
                     case content:
-                        nextElement = createContentXML(xml, line);
+                        nextElement = xmlElementCreator.createContentXML(xml, line);
                         break;
                     case plural:
                         System.out.println("PLURAL:" + line);
@@ -207,7 +222,7 @@ public class CSVParserApplication extends Application {
                                 i++;
                                 lineType = getLineType(lines.get(i));
                             }
-                            nextElement = createPluralXML(xml, pluralLines);
+                            nextElement = xmlElementCreator.createPluralXML(xml, pluralLines);
                         }
                         break;
                     default:
@@ -255,41 +270,6 @@ public class CSVParserApplication extends Application {
         return null;
     }
 
-    private Element createEmptyXML() {
-        //TODO: create empty line
-        return null;
-    }
-
-    private Comment createCommentXML(Document doc, String line) {
-        String content = line.substring(4, line.length() - 3);
-        return doc.createComment(content);
-    }
-
-    private Element createContentXML(Document doc, String line) {
-        String name = line.substring(0, line.indexOf(';'));
-        String content = line.substring(line.indexOf(';') + 1);
-
-        Element newElement = doc.createElement("string");
-        newElement.setAttribute("name", name);
-        newElement.setTextContent(content);
-
-        return newElement;
-    }
-
-    private Element createPluralXML(Document doc, List<String> lines) {
-        Element plurals = doc.createElement("plurals");
-        plurals.setAttribute("name", lines.get(0).substring(0, lines.get(0).indexOf('#')));
-        lines.forEach(line ->{
-            String quantity =  line.substring(line.indexOf('#')+1, line.indexOf(';'));
-            String content = line.substring(line.indexOf(';')+1, line.length());
-            Element item = doc.createElement("item");
-            item.setAttribute("quantity", quantity);
-            item.setTextContent(content);
-            plurals.appendChild(item);
-        });
-        return plurals;
-    }
-
     private void parseToStringsFile(List<String> lines) {
         List<String> outLines = new ArrayList<>();
         List<List<String>> plurals = new ArrayList<>();
@@ -300,10 +280,10 @@ public class CSVParserApplication extends Application {
                         outLines.add("");
                         break;
                     case comment:
-                        outLines.add(createCommentString(line));
+                        outLines.add(stringsElementCreator.createCommentString(line));
                         break;
                     case content:
-                        outLines.add(createContentString(line));
+                        outLines.add(stringsElementCreator.createContentString(line));
                         break;
                     case plural:
                         if (!getLineType(lines.get(lines.indexOf(line) - 1)).equals(LineType.plural)) { //check if it is the first item of the plurals
@@ -319,7 +299,7 @@ public class CSVParserApplication extends Application {
                             }
                             plurals.add(pluralLines);
                         }
-                        createPluralsFile(plurals);
+                        parseToStringsdict(stringsElementCreator.createPluralsFile(plurals));
                         break;
                 }
             }
@@ -329,102 +309,6 @@ public class CSVParserApplication extends Application {
         });
         System.out.println("STRINGS: all lines handled");
         createStringsFile(outLines, "Localizable.strings");
-    }
-
-    private String createContentString(String line) {
-        String name = line.substring(0, line.indexOf(';'));
-        String content = line.substring(line.indexOf(';') + 1);
-
-        String newElement = "\"" + name + "\"";
-        newElement += " = ";
-        newElement += "\"" + content + "\";";
-
-        return newElement;
-    }
-
-    private String createCommentString(String line) {
-        String content = line.substring(4, line.length() - 3);
-        return "/* " + content + " */";
-    }
-
-    private void createPluralsFile(List<List<String>> plurals){
-        Document file = createDoc();
-        assert file != null;
-
-        Element rootPlist = createXmlElement(file, "plist","version","1.0", null);
-        file.appendChild(rootPlist);
-
-        Element dict = file.createElement("dict");
-        rootPlist.appendChild(dict);
-
-        plurals.forEach(plural -> {
-            String name = plural.get(0).substring(0,plural.get(0).indexOf('#'));
-            final String[] zero = new String[1];
-            zero[0] = "";
-            final String[] one = new String[1];
-            one[0] = "";
-            final String[] two = new String[1];
-            two[0] = "";
-            final String[] few = new String[1];
-            few[0] = "";
-            final String[] many = new String[1];
-            many[0] = "";
-            final String[] other = new String[1];
-            other[0] = "";
-            plural.forEach(line -> {
-                String substring = line.substring(line.indexOf(';') + 1, line.length());
-                if(line.contains("#zero")) zero[0] = substring;
-                if(line.contains("#one")) one[0] = substring;
-                if(line.contains("#two")) two[0] = substring;
-                if(line.contains("#few")) few[0] = substring;
-                if(line.contains("#many")) many[0] = substring;
-                if(line.contains("#other")) other[0] = substring;
-            });
-
-            dict.appendChild(createXmlElement(file, "key",null,null, name));
-
-            Element rootDict = file.createElement("dict");
-            dict.appendChild(rootDict);
-
-            rootDict.appendChild(createXmlElement(file, "key",null,null, "NSStringLocalizedFormatKey"));
-            rootDict.appendChild(createXmlElement(file, "string",null,null, "%#@" + name + "@"));
-            rootDict.appendChild(createXmlElement(file, "key",null,null, name));
-
-            Element pluralDict = createXmlElement(file, "dict",null,null, null);
-            rootDict.appendChild(pluralDict);
-
-            pluralDict.appendChild(createXmlElement(file,"key",null,null,"NSStringFormatSpecTypeKey"));
-            pluralDict.appendChild(createXmlElement(file,"string",null,null,"NSStringPluralRuleType"));
-            pluralDict.appendChild(createXmlElement(file,"key",null,null,"NSStringFormatValueTypeKey"));
-            pluralDict.appendChild(createXmlElement(file,"string",null,null,"d"));
-
-            pluralDict.appendChild(createXmlElement(file, "key", null, null, "zero"));
-            pluralDict.appendChild(createXmlElement(file, "string", null, null, zero[0]));
-            pluralDict.appendChild(createXmlElement(file, "key", null, null, "one"));
-            pluralDict.appendChild(createXmlElement(file, "string", null, null, one[0]));
-            pluralDict.appendChild(createXmlElement(file, "key", null, null, "two"));
-            pluralDict.appendChild(createXmlElement(file, "string", null, null, two[0]));
-            pluralDict.appendChild(createXmlElement(file, "key", null, null, "few"));
-            pluralDict.appendChild(createXmlElement(file, "string", null, null, few[0]));
-            pluralDict.appendChild(createXmlElement(file, "key", null, null, "many"));
-            pluralDict.appendChild(createXmlElement(file, "string", null, null, many[0]));
-            pluralDict.appendChild(createXmlElement(file, "key", null, null, "other"));
-            pluralDict.appendChild(createXmlElement(file, "string", null, null, other[0]));
-
-        });
-
-        parseToStringsdict(file);
-    }
-
-    private Element createXmlElement(Document document,
-                                     String tagName,
-                                     String attribute,
-                                     String attributeValue,
-                                     String textContent){
-        Element element = document.createElement(tagName);
-        if(attribute != null) element.setAttribute(attribute, attributeValue);
-        if(textContent != null) element.setTextContent(textContent);
-        return element;
     }
 
     private void parseToStringsdict(Document document){
